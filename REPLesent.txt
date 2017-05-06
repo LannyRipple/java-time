@@ -1,0 +1,112 @@
+| \gJava 8 - Java Time
+
+Up until Java 8 the language did not have good standard library
+support for time.
+
+Now it has time concepts based on Joda Time.  Still these are
+(more than?) a bit confusing because there are representations
+for absolute date/times and local date/times.
+
+The new Java time support is immutable and value based.
+Compare with value-based `equals`, not reference-based `==`.
+
+All classes allow for direct modification via addition,
+subtraction, or substituion (e.g., of the month).
+---
+| \gUsing
+
+```
+   import java.time._
+
+   //If you need the formatters
+   import java.time.format._
+```
+---
+| \gOffset/Zoned Dates/Times
+
+\mInstant
+
+   An instant of time (nano since epoch).
+
+```
+      val instant = Instant.now()
+```
+
+   Can plus/minus seconds, millis, and/or nanos.
+--
+
+\mOffsetDateTime, OffsetTime
+
+   An instant offset from UTC
+
+```
+      val now = OffsetDateTime.now()
+      val nowOffset = OffsetDateTime.now(ZoneOffset.UTC)
+```
+
+   Can plus/minus seconds, minutes, hours, days, weeks,
+   years (and nanos).
+--
+
+\mZonedDateTime
+
+   An instant in a particular time-zone.
+
+```
+      val zoned = ZonedDateTime.now()
+      val zonedWId = ZonedDateTime.now(ZoneId.of("Europe/Paris"))
+```
+
+   Can plus/minus seconds, minutes, hours, days, weeks,
+   years (and nanos).
+
+   Time-zone datetimes can change because of daylight savings
+   and other regional rules.
+
+   Limited number of supported zones (but mechanism to provide
+   your own aliases).
+---
+| \gLocal Dates/Times
+
+\mLocalDate
+\mLocalTime
+\mLocalDateTime
+
+   Wall-clock dates/times.  Simpler than using time-zone
+   values but can cause problems unless time-zone never
+   changes.
+
+```
+      val date = LocalDate.now()
+      val time = LocalTime.now()
+      val datetime = LocalDateTime.now()
+```
+
+   No timezone info.  To convert into an offset/zoned you
+   will need to specify the original zone in the conversion.
+---
+| \gDuration and Period
+
+\mDuration
+
+```
+      val dayDuration = Duration.ofHours(24)
+      val then = OffsetDateTime.now().plus(dayDuration)
+```
+
+   A time-based amount of time (e.g., 34.5 seconds).
+--
+
+\mPeriod
+
+```
+      val beforeDST = ZonedDateTime.parse("2017-03-12T00:00:00-06:00[America/Chicago]")
+      val dayPeriod = Period.ofDays(1)
+      val dayDuration = Duration.ofDays(1)
+      val tomorrowPer = beforeDST.plus(dayPeriod)
+      val tomorrowDur = beforeDST.plus(dayDuration)
+```
+
+   A date-based amount of time (days, weeks, months, years).
+   Adding a Period to a ZonedDateTime will handle stuff like
+   daylight savings changes.
